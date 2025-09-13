@@ -9,9 +9,9 @@
 }
 
 .hero__img {
-  border-radius: 50%;
-  width: 6rem;
-  height: 6rem;
+  border-radius: 40%;
+  width: 5rem;
+  height: 5rem;
 }
 
 .hero__subtitle {
@@ -23,7 +23,7 @@
 .hero__title {
   color: var(--clr-slate400);
   text-transform: uppercase;
-  font-size: var(--size-4xl);
+  font-size: var(--size-2xl);
   letter-spacing: -0.05em;
   line-height: 0.9;
 }
@@ -100,12 +100,12 @@
 /* xl */
 @media (min-width: 1280px) {
   .hero {
-    gap: 2rem;
+    gap: 1.5rem;
   }
 
   .hero__img {
-    width: 10rem;
-    height: 10rem;
+    width: 11rem;
+    height: 12rem;
   }
 
   .hero__subtitle {
