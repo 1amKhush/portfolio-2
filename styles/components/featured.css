@@ -23,7 +23,7 @@
 }
 
 .featured__description {
-  max-width: 60ch;
+  max-width: 130ch;
   color: var(--clr-slate600);
   font-size: var(--size-sm);
   margin: 1rem 0;
