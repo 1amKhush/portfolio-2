@@ -5,11 +5,16 @@ import "../styles/components/footer.css";
 import "../styles/components/mobile-nav.css";
 import "../styles/components/blog.css";
 import "../styles/components/blog-page.css";
+import "../styles/components/transitions.css";
 import "../styles/utils.css";
 
 import mobileNav from "./utils/mobile-nav";
 import initParticles from "./utils/particles";
+import initPremiumFeatures from "./utils/page-transitions";
 import blogs, { formatDate } from "./data/blogs.js";
+
+// Initialize premium features (loading, transitions, scroll effects)
+initPremiumFeatures();
 
 // Initialize mobile nav
 mobileNav();

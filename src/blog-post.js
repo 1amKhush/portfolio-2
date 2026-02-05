@@ -4,10 +4,15 @@ import "../styles/components/header.css";
 import "../styles/components/footer.css";
 import "../styles/components/mobile-nav.css";
 import "../styles/components/blog-post.css";
+import "../styles/components/transitions.css";
 import "../styles/utils.css";
 
 import mobileNav from "./utils/mobile-nav";
 import initParticles from "./utils/particles";
+import initPremiumFeatures from "./utils/page-transitions";
+
+// Initialize premium features (loading, transitions, scroll effects)
+initPremiumFeatures();
 
 // Initialize mobile nav
 mobileNav();

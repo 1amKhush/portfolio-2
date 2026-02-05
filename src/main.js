@@ -9,6 +9,7 @@ import "../styles/components/contact.css";
 import "../styles/components/footer.css";
 import "../styles/components/mobile-nav.css";
 import "../styles/components/blog.css";
+import "../styles/components/transitions.css";
 import "../styles/utils.css";
 
 import mobileNav from "./utils/mobile-nav";
@@ -16,6 +17,10 @@ import darkMode, { setParticleSystem } from "./utils/dark-mode";
 import lazyLoading from "./utils/lazy-loading";
 import initParticles from "./utils/particles";
 import initBlogs from "./utils/blog-renderer";
+import initPremiumFeatures from "./utils/page-transitions";
+
+// Initialize premium features (loading, transitions, scroll effects)
+initPremiumFeatures();
 
 // Initialize features
 mobileNav();
