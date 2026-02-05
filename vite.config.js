@@ -8,6 +8,7 @@ export default defineConfig({
         main: resolve(__dirname, "index.html"),
         blog: resolve(__dirname, "blog.html"),
         blogTorrentium: resolve(__dirname, "blog-torrentium.html"),
+        blogWebrtc: resolve(__dirname, "blog-webrtc.html"),
       },
     },
   },

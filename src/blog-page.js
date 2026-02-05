@@ -54,7 +54,7 @@ const createBlogCard = (blog, index) => {
         ${categoryIcons[blog.category]}
         ${blog.category}
       </span>
-      ${hasRealLink ? `<span class="blog-card__date">${formatDate(blog.date)}</span>` : ''}
+      ${hasRealLink ? `<span class="blog-card__date">${formatDate(blog.date)}</span>` : ""}
     </div>
     <h3 class="blog-card__title">${blog.title}</h3>
     <p class="blog-card__excerpt">${blog.excerpt}</p>

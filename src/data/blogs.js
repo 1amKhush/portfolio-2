@@ -33,7 +33,7 @@ const blogs = [
     readTime: "5 min read",
     tags: ["WebRTC", "JavaScript", "Networking"],
     category: "tutorial",
-    link: "#",
+    link: "blog-webrtc.html",
   },
   {
     id: 4,
