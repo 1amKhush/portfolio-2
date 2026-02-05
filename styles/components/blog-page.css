@@ -1,5 +1,13 @@
 /* Blog Page Specific Styles */
 
+/* Header Nav Layout */
+.header nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
 /* Logo */
 .header__logo {
   display: flex;
