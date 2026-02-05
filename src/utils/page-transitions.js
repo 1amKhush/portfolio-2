@@ -32,7 +32,7 @@ const initPageTransitions = () => {
   }
 
   // Handle internal link clicks with smooth transition
-  document.querySelectorAll('a[href]').forEach((link) => {
+  document.querySelectorAll("a[href]").forEach((link) => {
     const href = link.getAttribute("href");
 
     // Only handle internal HTML page links (not anchors or external)

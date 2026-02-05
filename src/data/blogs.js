@@ -22,7 +22,7 @@ const blogs = [
     readTime: "6 min read",
     tags: ["Networking", "Distributed Systems", "P2P"],
     category: "learning",
-    link: "#",
+    link: "blog-dht.html",
   },
   {
     id: 3,

@@ -9,6 +9,7 @@ export default defineConfig({
         blog: resolve(__dirname, "blog.html"),
         blogTorrentium: resolve(__dirname, "blog-torrentium.html"),
         blogWebrtc: resolve(__dirname, "blog-webrtc.html"),
+        blogDht: resolve(__dirname, "blog-dht.html"),
       },
     },
   },

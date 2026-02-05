@@ -12,7 +12,8 @@
   align-items: center;
   justify-content: center;
   z-index: 99999;
-  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+  transition:
+    opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
     visibility 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -87,7 +88,8 @@ html {
 .animate-on-scroll {
   opacity: 0;
   transform: translateY(30px);
-  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+  transition:
+    opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
     transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -98,14 +100,16 @@ html {
 
 /* Premium Hover Effects */
 .blog-card {
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+  transition:
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
     box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
     border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .blog-card:hover {
   transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3),
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.3),
     0 0 60px rgba(99, 102, 241, 0.15);
 }
 
@@ -126,7 +130,9 @@ html {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  transition: width 0.6s ease, height 0.6s ease;
+  transition:
+    width 0.6s ease,
+    height 0.6s ease;
 }
 
 .btn:hover::before {
@@ -184,7 +190,10 @@ button:focus-visible {
   pointer-events: none;
   z-index: 999999;
   mix-blend-mode: difference;
-  transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease;
+  transition:
+    width 0.3s ease,
+    height 0.3s ease,
+    border-color 0.3s ease;
   transform: translate(-50%, -50%);
 }
 
@@ -256,13 +265,21 @@ img[src] {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--clr-indigo) 0%, var(--clr-rose) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--clr-indigo) 0%,
+    var(--clr-rose) 100%
+  );
   border-radius: 5px;
   border: 2px solid var(--clr-bg);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, var(--clr-indigo-light) 0%, var(--clr-rose-light) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--clr-indigo-light) 0%,
+    var(--clr-rose-light) 100%
+  );
 }
 
 /* Reduced Motion */
