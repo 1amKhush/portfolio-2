@@ -4,52 +4,66 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  gap: 1rem;
+  gap: 1.5rem;
+  padding: 4rem 2rem;
+  background: var(--gradient-card);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  backdrop-filter: var(--glass-blur);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative glow */
+.contact::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at center,
+    rgba(79, 70, 229, 0.1) 0%,
+    transparent 50%
+  );
+  animation: pulse-glow 6s ease-in-out infinite;
+  pointer-events: none;
 }
 
 .contact__title {
-  font-size: var(--size-2xl);
-  color: var(--clr-light);
-  text-transform: capitalize;
+  font-size: var(--size-3xl);
+  font-weight: 700;
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  z-index: 1;
 }
 
 .contact__description {
-  font-size: var(--size-sm);
+  font-size: var(--size-base);
   color: var(--clr-slate600);
-  max-width: 60ch;
+  max-width: 50ch;
+  line-height: 1.8;
+  position: relative;
+  z-index: 1;
 }
 
 .contact__btn {
-  font-size: var(--size-sm);
+  font-size: var(--size-base);
+  position: relative;
+  z-index: 1;
 }
 
 /* xs */
 @media (min-width: 475px) {
   .contact {
-    gap: 1.5rem;
+    gap: 1.75rem;
+    padding: 5rem 3rem;
   }
 
-  .contact__title {
-    font-size: var(--size-3xl);
-  }
-
-  .contact__description {
-    font-size: var(--size-base);
-  }
-
-  .contact__btn {
-    font-size: var(--size-base);
-  }
-}
-
-/* sm */
-/* @media (min-width: 640px) {} */
-
-/* md */
-/* @media (min-width: 768px) {} */
-
-/* lg */
-@media (min-width: 1024px) {
   .contact__title {
     font-size: var(--size-4xl);
   }
@@ -63,14 +77,40 @@
   }
 }
 
-/* xl */
-@media (min-width: 1280px) {
+/* sm */
+/* @media (min-width: 640px) {} */
+
+/* md */
+/* @media (min-width: 768px) {} */
+
+/* lg */
+@media (min-width: 1024px) {
   .contact {
-    gap: 2rem;
+    padding: 6rem 4rem;
   }
 
   .contact__title {
     font-size: var(--size-5xl);
+  }
+
+  .contact__description {
+    font-size: var(--size-xl);
+  }
+
+  .contact__btn {
+    font-size: var(--size-xl);
+  }
+}
+
+/* xl */
+@media (min-width: 1280px) {
+  .contact {
+    gap: 2rem;
+    padding: 8rem 5rem;
+  }
+
+  .contact__title {
+    font-size: var(--size-6xl);
   }
 
   .contact__description {

@@ -20,32 +20,140 @@
   display: inline-block;
   font-weight: 600;
   text-decoration: none;
-  letter-spacing: -0.05em;
-  background-color: var(--clr-rose);
+  letter-spacing: -0.02em;
+  background: var(--gradient-primary);
+  background-size: 200% 200%;
   color: #f1f5f9;
-  padding: 0.5em 1em;
-  border-radius: 6px;
-  box-shadow: 0 10px 20px rgba(225, 29, 72, 0.5),
-    0 6px 6px rgba(225, 29, 72, 0.5), 0 0 100px -10px var(--clr-rose);
-  transition: transform 0.3s, box-shadow 0.3s;
+  padding: 0.75em 1.5em;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 4px 15px rgba(225, 29, 72, 0.4),
+    0 0 30px rgba(79, 70, 229, 0.2);
+  transition:
+    transform var(--transition-normal),
+    box-shadow var(--transition-normal),
+    background-position var(--transition-slow);
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left var(--transition-slow);
+}
+
+.btn:hover::before {
+  left: 100%;
 }
 
 .btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 14px 28px rgba(225, 29, 72, 0.25),
-    0 10px 10px rgba(225, 29, 72, 0.22), 0 0 120px -10px var(--clr-rose);
+  transform: translateY(-3px) scale(1.02);
+  background-position: 100% 50%;
+  box-shadow:
+    0 8px 25px rgba(225, 29, 72, 0.5),
+    0 0 50px rgba(79, 70, 229, 0.3);
+}
+
+.btn:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+/* Secondary button variant */
+.btn--secondary {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn--secondary:hover {
+  background: rgba(79, 70, 229, 0.2);
+  border-color: var(--clr-indigo);
+  box-shadow: var(--shadow-glow-indigo);
+}
+
+/* Glass card style */
+.glass-card {
+  background: var(--gradient-card);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 2rem;
+  transition:
+    transform var(--transition-normal),
+    box-shadow var(--transition-normal);
+}
+
+.glass-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glow effect */
+.glow {
+  position: relative;
+}
+
+.glow::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: var(--gradient-primary);
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  filter: blur(15px);
+  transition: opacity var(--transition-normal);
+}
+
+.glow:hover::after {
+  opacity: 0.6;
 }
 
 .container {
   width: 100%;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .section {
-  margin-top: 5rem;
+  margin-top: 6rem;
+  animation: fade-in-up 0.8s ease-out both;
+}
+
+/* Staggered animation for sections */
+.section:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.section:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.section:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.section:nth-child(4) {
+  animation-delay: 0.4s;
 }
 
 .loading {
@@ -55,6 +163,26 @@
 .loaded {
   filter: blur(0) grayscale(0);
   transition: 0.7s ease-in-out;
+}
+
+/* Section titles */
+.section-title {
+  font-size: var(--size-3xl);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  position: relative;
+  display: inline-block;
+}
+
+.section-title::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 60px;
+  height: 4px;
+  background: var(--gradient-primary);
+  border-radius: 2px;
 }
 
 /* xs */
@@ -68,6 +196,8 @@
 @media (min-width: 640px) {
   .container {
     max-width: 640px;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
 }
 
@@ -76,12 +206,18 @@
   .container {
     max-width: 768px;
   }
+
+  .section {
+    margin-top: 8rem;
+  }
 }
 
 /* lg */
 @media (min-width: 1024px) {
   .container {
     max-width: 1024px;
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 
   .section {
