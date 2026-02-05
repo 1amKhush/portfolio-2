@@ -19,6 +19,624 @@
 
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <title>How I Built Torrentium | Khushvendra</title>
+
+    <style>
+      /* Torrentium-specific visual components */
+      
+      /* Hero visual */
+      .hero-visual {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.1));
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        border-radius: 20px;
+        padding: 2.5rem;
+        margin: 2rem 0;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-visual::before {
+        content: '';
+        position: absolute;
+        top: -100%;
+        left: -100%;
+        width: 300%;
+        height: 300%;
+        background: radial-gradient(circle at center, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
+        animation: rotate-slow 20s linear infinite;
+      }
+
+      @keyframes rotate-slow {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      .hero-visual__icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 2;
+      }
+
+      .hero-visual__text {
+        position: relative;
+        z-index: 2;
+        font-size: 1.25rem;
+        color: var(--clr-light);
+        font-weight: 600;
+      }
+
+      .hero-visual__subtext {
+        position: relative;
+        z-index: 2;
+        color: var(--clr-slate400);
+        margin-top: 0.5rem;
+      }
+
+      /* Comparison cards */
+      .sharing-comparison {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 1rem;
+        align-items: center;
+        margin: 2rem 0;
+      }
+
+      @media (max-width: 700px) {
+        .sharing-comparison {
+          grid-template-columns: 1fr;
+        }
+        .sharing-comparison__vs {
+          transform: rotate(90deg);
+        }
+      }
+
+      .sharing-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+      }
+
+      .sharing-card:hover {
+        transform: translateY(-4px);
+      }
+
+      .sharing-card--traditional {
+        border-color: rgba(244, 63, 94, 0.3);
+      }
+
+      .sharing-card--traditional:hover {
+        border-color: rgba(244, 63, 94, 0.6);
+      }
+
+      .sharing-card--p2p {
+        border-color: rgba(34, 197, 94, 0.3);
+      }
+
+      .sharing-card--p2p:hover {
+        border-color: rgba(34, 197, 94, 0.6);
+      }
+
+      .sharing-card__icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .sharing-card__title {
+        font-family: var(--font-heading);
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--clr-light);
+        margin-bottom: 0.75rem;
+      }
+
+      .sharing-card__flow {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+        color: var(--clr-slate400);
+      }
+
+      .sharing-card__flow span {
+        padding: 0.25rem 0.5rem;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+      }
+
+      .sharing-card__flow .arrow {
+        background: none;
+        color: var(--clr-slate500);
+      }
+
+      .sharing-comparison__vs {
+        width: 50px;
+        height: 50px;
+        background: var(--gradient-primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: white;
+        font-size: 0.875rem;
+      }
+
+      /* P2P party analogy */
+      .party-analogy {
+        background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(34, 197, 94, 0.1));
+        border: 1px solid rgba(6, 182, 212, 0.3);
+        border-radius: 16px;
+        padding: 2rem;
+        margin: 2rem 0;
+      }
+
+      .party-analogy__header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .party-analogy__icon {
+        font-size: 1.75rem;
+      }
+
+      .party-analogy__title {
+        font-family: var(--font-heading);
+        font-weight: 700;
+        color: var(--clr-light);
+      }
+
+      .party-analogy__content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+
+      @media (max-width: 600px) {
+        .party-analogy__content {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .party-analogy__method {
+        padding: 1rem;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 12px;
+      }
+
+      .party-analogy__method-title {
+        font-weight: 600;
+        color: var(--clr-light);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .party-analogy__method-desc {
+        font-size: 0.9rem;
+        color: var(--clr-slate400);
+        line-height: 1.6;
+      }
+
+      /* Goals grid */
+      .goals-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0;
+      }
+
+      .goal-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        padding: 1.25rem;
+        text-align: center;
+        transition: all 0.3s ease;
+      }
+
+      .goal-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(99, 102, 241, 0.5);
+      }
+
+      .goal-card__icon {
+        font-size: 2rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .goal-card__title {
+        font-weight: 600;
+        color: var(--clr-light);
+        margin-bottom: 0.5rem;
+      }
+
+      .goal-card__desc {
+        font-size: 0.85rem;
+        color: var(--clr-slate400);
+        line-height: 1.5;
+      }
+
+      /* Challenge cards */
+      .challenge-section {
+        background: linear-gradient(135deg, rgba(251, 191, 36, 0.08), rgba(245, 158, 11, 0.05));
+        border: 1px solid rgba(251, 191, 36, 0.25);
+        border-radius: 16px;
+        padding: 2rem;
+        margin: 2rem 0;
+      }
+
+      .challenge-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .challenge-number {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, #fbbf24, #f59e0b);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: #1e1e1e;
+        font-size: 1rem;
+      }
+
+      .challenge-title {
+        font-family: var(--font-heading);
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: var(--clr-light);
+      }
+
+      .challenge-content {
+        color: var(--clr-slate300);
+        line-height: 1.8;
+      }
+
+      .challenge-content p {
+        margin: 1rem 0;
+      }
+
+      .challenge-content ul {
+        margin: 1rem 0;
+        padding-left: 1.25rem;
+      }
+
+      .challenge-content li {
+        margin: 0.5rem 0;
+      }
+
+      /* Solution boxes */
+      .solution-box {
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        border-radius: 12px;
+        padding: 1.25rem;
+        margin: 1.5rem 0;
+      }
+
+      .solution-box__header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        color: #22c55e;
+        margin-bottom: 0.75rem;
+      }
+
+      .solution-box__header::before {
+        content: '✓';
+      }
+
+      .solution-box__content {
+        font-size: 0.95rem;
+        color: var(--clr-slate300);
+      }
+
+      /* NAT tricks */
+      .nat-tricks {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin: 1.5rem 0;
+      }
+
+      .nat-trick {
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+        padding: 1rem 1.25rem;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+      }
+
+      .nat-trick:hover {
+        border-color: rgba(6, 182, 212, 0.5);
+        transform: translateX(4px);
+      }
+
+      .nat-trick__icon {
+        width: 44px;
+        height: 44px;
+        background: linear-gradient(135deg, #06b6d4, #0891b2);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 1.25rem;
+      }
+
+      .nat-trick__content h4 {
+        color: var(--clr-light);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      .nat-trick__content p {
+        color: var(--clr-slate400);
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin: 0;
+      }
+
+      /* CID visualization */
+      .cid-visual {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        font-family: 'Fira Code', 'JetBrains Mono', monospace;
+        text-align: center;
+      }
+
+      .cid-visual__label {
+        font-size: 0.8rem;
+        color: var(--clr-slate400);
+        margin-bottom: 0.5rem;
+        font-family: var(--font-body);
+      }
+
+      .cid-visual__value {
+        color: var(--clr-cyan);
+        font-size: 0.85rem;
+        word-break: break-all;
+        padding: 0.75rem;
+        background: rgba(6, 182, 212, 0.1);
+        border: 1px solid rgba(6, 182, 212, 0.3);
+        border-radius: 8px;
+      }
+
+      /* Process flow */
+      .process-flow {
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(30, 41, 59, 0.6));
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 2rem;
+        margin: 2rem 0;
+      }
+
+      .process-flow__title {
+        font-family: var(--font-heading);
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--clr-light);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .process-flow__title-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--gradient-primary);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+      }
+
+      .process-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .process-step {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem 1rem;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        transition: all 0.2s ease;
+      }
+
+      .process-step:hover {
+        background: rgba(99, 102, 241, 0.1);
+        transform: translateX(4px);
+      }
+
+      .process-step__number {
+        width: 28px;
+        height: 28px;
+        background: var(--gradient-primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: white;
+        flex-shrink: 0;
+      }
+
+      .process-step__text {
+        color: var(--clr-slate300);
+        font-size: 0.95rem;
+      }
+
+      /* Tech stack grid */
+      .tech-stack {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0;
+      }
+
+      .tech-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        padding: 1.25rem;
+        text-align: center;
+        transition: all 0.3s ease;
+      }
+
+      .tech-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(99, 102, 241, 0.5);
+      }
+
+      .tech-card__icon {
+        font-size: 2rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .tech-card__name {
+        font-weight: 700;
+        color: var(--clr-light);
+        margin-bottom: 0.25rem;
+      }
+
+      .tech-card__desc {
+        font-size: 0.8rem;
+        color: var(--clr-slate400);
+      }
+
+      /* Learnings cards */
+      .learnings-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin: 1.5rem 0;
+      }
+
+      .learning-card {
+        background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(99, 102, 241, 0.05));
+        border: 1px solid rgba(168, 85, 247, 0.3);
+        border-radius: 12px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .learning-card:hover {
+        border-color: rgba(168, 85, 247, 0.6);
+      }
+
+      .learning-card__number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        background: linear-gradient(135deg, #a855f7, #6366f1);
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 0.75rem;
+      }
+
+      .learning-card__title {
+        font-weight: 700;
+        color: var(--clr-light);
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .learning-card__desc {
+        color: var(--clr-slate400);
+        font-size: 0.95rem;
+        line-height: 1.7;
+      }
+
+      /* Roadmap */
+      .roadmap {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0;
+      }
+
+      .roadmap-item {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        padding: 1.25rem;
+        transition: all 0.3s ease;
+      }
+
+      .roadmap-item:hover {
+        border-color: rgba(6, 182, 212, 0.5);
+        transform: translateY(-4px);
+      }
+
+      .roadmap-item__icon {
+        font-size: 1.5rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .roadmap-item__title {
+        font-weight: 600;
+        color: var(--clr-light);
+        margin-bottom: 0.5rem;
+      }
+
+      .roadmap-item__desc {
+        font-size: 0.85rem;
+        color: var(--clr-slate400);
+        line-height: 1.5;
+      }
+
+      /* Quote callout */
+      .quote-callout {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.1));
+        border: 1px solid rgba(99, 102, 241, 0.4);
+        border-radius: 16px;
+        padding: 2rem;
+        margin: 2rem 0;
+        text-align: center;
+      }
+
+      .quote-callout__text {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--clr-light);
+        line-height: 1.6;
+        font-style: italic;
+      }
+
+      .quote-callout__emoji {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+    </style>
   </head>
   <body>
     <!-- Particle Canvas Background -->
@@ -122,7 +740,7 @@
               </svg>
               Project
             </span>
-            <span class="blog-post__date">20 Dec, 2025</span>
+            <span class="blog-post__date">Dec 20, 2025</span>
             <span class="blog-post__read-time">10 min read</span>
           </div>
           <h1 class="blog-post__title">
@@ -130,7 +748,7 @@
           </h1>
           <p class="blog-post__subtitle">
             What if you could just send files directly to your friend? Computer
-            to computer. No middleman.
+            to computer. No middleman. That's exactly what I built.
           </p>
           <div class="blog-post__tags">
             <span class="blog-post__tag">Go</span>
@@ -144,6 +762,7 @@
 
         <!-- Post Content -->
         <div class="blog-post__content">
+          
           <h2>The Problem with Traditional File Sharing</h2>
           <p>
             Have you ever tried to share a large file with a friend? Maybe you
@@ -152,6 +771,32 @@
             you've used services like WeTransfer, only to find your link expired
             after a few days.
           </p>
+
+          <div class="sharing-comparison">
+            <div class="sharing-card sharing-card--traditional">
+              <div class="sharing-card__icon">☁️</div>
+              <div class="sharing-card__title">Traditional Way</div>
+              <div class="sharing-card__flow">
+                <span>📁 Your File</span>
+                <span class="arrow">↓</span>
+                <span>🏢 Google/WeTransfer Server</span>
+                <span class="arrow">↓</span>
+                <span>📥 Friend Downloads</span>
+              </div>
+            </div>
+            <div class="sharing-comparison__vs">VS</div>
+            <div class="sharing-card sharing-card--p2p">
+              <div class="sharing-card__icon">🔗</div>
+              <div class="sharing-card__title">P2P Way</div>
+              <div class="sharing-card__flow">
+                <span>📁 Your File</span>
+                <span class="arrow">↓</span>
+                <span>📥 Friend Downloads</span>
+                <span style="font-size: 0.75rem; color: var(--clr-cyan);">Direct connection!</span>
+              </div>
+            </div>
+          </div>
+
           <p>
             Here's the thing: all these services have something in common—they
             rely on a <strong>central server</strong>. Your file goes up to
@@ -160,52 +805,66 @@
             the privilege of using someone else's storage.
           </p>
           <p>
-            What if you could just send the file directly to your friend?
-            Computer to computer. No middleman.
-            <strong>That's exactly what Torrentium does.</strong>
+            <strong>That's exactly what Torrentium changes.</strong>
           </p>
 
           <h2>What is Peer-to-Peer, Anyway?</h2>
+
+          <div class="party-analogy">
+            <div class="party-analogy__header">
+              <span class="party-analogy__icon">🎉</span>
+              <span class="party-analogy__title">The Party Analogy</span>
+            </div>
+            <div class="party-analogy__content">
+              <div class="party-analogy__method">
+                <div class="party-analogy__method-title">
+                  <span>🏢</span> Traditional (Client-Server)
+                </div>
+                <div class="party-analogy__method-desc">
+                  Give your photo to the host, who makes copies and hands them out. If the host leaves, nobody gets the photo.
+                </div>
+              </div>
+              <div class="party-analogy__method">
+                <div class="party-analogy__method-title">
+                  <span>🌐</span> P2P (Peer-to-Peer)
+                </div>
+                <div class="party-analogy__method-desc">
+                  Show the photo to people near you. They take pictures and share too. Even if you leave, the photo keeps spreading!
+                </div>
+              </div>
+            </div>
+          </div>
+
           <p>
-            Imagine you're at a party and you want to share a photo with
-            everyone. The traditional way would be to give your photo to the
-            host, who then makes copies and hands them out to guests. If the
-            host leaves, nobody gets the photo.
-          </p>
-          <p>
-            Peer-to-peer (P2P) is different. You show the photo to a few people
-            near you, they take pictures of it with their phones, and now they
-            can share it too. Even if you leave the party, the photo keeps
-            spreading. There's no single person controlling everything.
-          </p>
-          <p>
-            <strong
-              >That's the magic of P2P—everyone is both a consumer and a
-              provider.</strong
-            >
+            <strong>That's the magic of P2P—everyone is both a consumer and a provider.</strong>
             When you download a file, you also help share it with others.
           </p>
 
           <h2>Why I Built Torrentium</h2>
-          <p>I wanted to create something that:</p>
-          <ul>
-            <li>
-              <strong>Just works</strong> - Download one file, double-click, and
-              you're sharing
-            </li>
-            <li>
-              <strong>Doesn't need a server</strong> - No monthly hosting bills,
-              no central point of failure
-            </li>
-            <li>
-              <strong>Respects privacy</strong> - Your files go directly to your
-              friend, not through my servers
-            </li>
-            <li>
-              <strong>Actually looks nice</strong> - Because command-line tools
-              scare most people
-            </li>
-          </ul>
+
+          <div class="goals-grid">
+            <div class="goal-card">
+              <div class="goal-card__icon">⚡</div>
+              <div class="goal-card__title">Just Works</div>
+              <div class="goal-card__desc">Download one file, double-click, and you're sharing</div>
+            </div>
+            <div class="goal-card">
+              <div class="goal-card__icon">🚫</div>
+              <div class="goal-card__title">No Server Needed</div>
+              <div class="goal-card__desc">No monthly hosting bills, no central point of failure</div>
+            </div>
+            <div class="goal-card">
+              <div class="goal-card__icon">🔒</div>
+              <div class="goal-card__title">Respects Privacy</div>
+              <div class="goal-card__desc">Your files go directly to your friend, not through my servers</div>
+            </div>
+            <div class="goal-card">
+              <div class="goal-card__icon">✨</div>
+              <div class="goal-card__title">Actually Looks Nice</div>
+              <div class="goal-card__desc">Because command-line tools scare most people</div>
+            </div>
+          </div>
+
           <p>
             The result is <strong>Torrentium</strong>: a desktop app where you
             can share files by just dragging them in, and download files with a
@@ -218,249 +877,299 @@
             are three major problems that kept me up at night:
           </p>
 
-          <h3>Challenge 1: How Do Computers Find Each Other?</h3>
-          <p>
-            When you type "google.com" in your browser, your computer asks a
-            special server (called DNS) for Google's address. But in a P2P
-            network, there's no central directory.
-          </p>
-          <p>
-            Think of it like trying to find someone at a massive festival with
-            no phone signal. How do you find your friend?
-          </p>
-          <p>
-            The solution is something called a
-            <strong>Distributed Hash Table (DHT)</strong>. It works like this:
-          </p>
-          <ul>
-            <li>
-              Everyone at the festival memorizes a small piece of information
-              about where a few other people are
-            </li>
-            <li>
-              When you're looking for someone, you ask the people around you
-            </li>
-            <li>
-              They might not know, but they know someone who might know
-              someone...
-            </li>
-            <li>
-              Eventually, through a chain of "ask your neighbor," you find your
-              friend
-            </li>
-          </ul>
-          <p>
-            In Torrentium, when you share a file, you tell a few nearby
-            computers "Hey, I have this file!" They remember that. When someone
-            else wants that file, they ask around until someone says "Oh yeah, I
-            know who has that!"
-          </p>
-          <p>
-            This is the same technology that powers IPFS and many other
-            decentralized systems.
-          </p>
+          <!-- Challenge 1 -->
+          <div class="challenge-section">
+            <div class="challenge-header">
+              <span class="challenge-number">1</span>
+              <span class="challenge-title">How Do Computers Find Each Other?</span>
+            </div>
+            <div class="challenge-content">
+              <p>
+                When you type "google.com" in your browser, your computer asks a
+                special server (called DNS) for Google's address. But in a P2P
+                network, there's no central directory.
+              </p>
+              <p>
+                Think of it like trying to find someone at a massive festival with
+                no phone signal. How do you find your friend?
+              </p>
+              
+              <div class="solution-box">
+                <div class="solution-box__header">Solution: Distributed Hash Table (DHT)</div>
+                <div class="solution-box__content">
+                  <ul>
+                    <li>Everyone memorizes a small piece of information about where a few other people are</li>
+                    <li>When you're looking for someone, you ask the people around you</li>
+                    <li>They might not know, but they know someone who might know someone...</li>
+                    <li>Eventually, through a chain of "ask your neighbor," you find your friend</li>
+                  </ul>
+                  <p style="margin-top: 1rem; color: var(--clr-slate300);">
+                    This is the same technology that powers IPFS and many other decentralized systems.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
 
-          <h3>
-            Challenge 2: The NAT Problem (or "Why Can't Computers Just
-            Connect?")
-          </h3>
-          <p>
-            Here's a frustrating reality: most computers can't directly talk to
-            each other on the internet.
-          </p>
-          <p>
-            Imagine your home network as an apartment building. Your router is
-            the front desk. When you visit a website, you tell the front desk "I
-            want to talk to Google," and they facilitate that conversation. But
-            if someone from outside wants to talk to you, the front desk says
-            "Sorry, I don't know who you're asking for."
-          </p>
-          <p>
-            This is called <strong>NAT (Network Address Translation)</strong>,
-            and it's everywhere. Your home router does it. Your office network
-            does it. Even your mobile carrier does it.
-          </p>
-          <p>
-            So how do two computers behind NATs talk to each other? We use a few
-            tricks:
-          </p>
-          <ul>
-            <li>
-              <strong>STUN Servers:</strong> These are like public phone booths.
-              Both computers call the same public server, and the server tells
-              each of them "Here's how the other person can reach you." It's
-              like two people meeting at a landmark to exchange contact info.
-            </li>
-            <li>
-              <strong>Hole Punching:</strong> Once we know each other's
-              "addresses," we both try to connect at the same time. It's like
-              two people knocking on each other's doors simultaneously—the doors
-              stay open just long enough for the connection to work.
-            </li>
-            <li>
-              <strong>Relay Servers:</strong> When all else fails, we use a
-              relay. It's like asking a mutual friend to pass messages between
-              you. Not as fast as direct communication, but it always works.
-            </li>
-          </ul>
-          <p>
-            Torrentium automatically tries all these methods. You don't have to
-            think about it—it just connects.
-          </p>
+          <!-- Challenge 2 -->
+          <div class="challenge-section">
+            <div class="challenge-header">
+              <span class="challenge-number">2</span>
+              <span class="challenge-title">The NAT Problem (Why Can't Computers Just Connect?)</span>
+            </div>
+            <div class="challenge-content">
+              <p>
+                Here's a frustrating reality: most computers can't directly talk to each other on the internet.
+              </p>
+              <p>
+                Imagine your home network as an apartment building. Your router is
+                the front desk. When you visit a website, you tell the front desk "I
+                want to talk to Google," and they facilitate that conversation. But
+                if someone from outside wants to talk to you, the front desk says
+                "Sorry, I don't know who you're asking for."
+              </p>
+              <p>
+                This is called <strong>NAT (Network Address Translation)</strong>,
+                and it's everywhere.
+              </p>
 
-          <h3>Challenge 3: Making Sure Files Aren't Corrupted</h3>
-          <p>
-            When you download a file piece by piece from multiple strangers on
-            the internet, how do you know you're getting the real file? What if
-            someone sends you garbage data, either by accident or on purpose?
-          </p>
-          <p>
-            This is where <strong>content-addressable storage</strong> comes in.
-            It's a fancy term for a simple idea:
-          </p>
-          <blockquote>The name of a file is based on its contents.</blockquote>
-          <p>
-            When you share a file in Torrentium, we calculate a unique
-            "fingerprint" (called a hash) of that file. This fingerprint becomes
-            the file's address—its <strong>CID (Content Identifier)</strong>.
-          </p>
-          <p>Here's why this is brilliant:</p>
-          <ul>
-            <li>
-              If even one tiny bit of the file is different, the fingerprint is
-              completely different
-            </li>
-            <li>
-              When you download a file, you can calculate its fingerprint and
-              compare
-            </li>
-            <li>
-              If they match, you know you have the exact same file—it's
-              mathematically certain
-            </li>
-          </ul>
-          <p>
-            This is the same principle that cryptocurrencies use to verify
-            transactions. It's also how IPFS names all its files.
-          </p>
+              <div class="nat-tricks">
+                <div class="nat-trick">
+                  <div class="nat-trick__icon">📞</div>
+                  <div class="nat-trick__content">
+                    <h4>STUN Servers</h4>
+                    <p>Like public phone booths. Both computers call the same public server, which tells each of them "Here's how the other person can reach you."</p>
+                  </div>
+                </div>
+                <div class="nat-trick">
+                  <div class="nat-trick__icon">🕳️</div>
+                  <div class="nat-trick__content">
+                    <h4>Hole Punching</h4>
+                    <p>Once we know each other's addresses, we both try to connect at the same time. Like two people knocking on each other's doors simultaneously.</p>
+                  </div>
+                </div>
+                <div class="nat-trick">
+                  <div class="nat-trick__icon">🔄</div>
+                  <div class="nat-trick__content">
+                    <h4>Relay Servers</h4>
+                    <p>When all else fails, ask a mutual friend to pass messages. Not as fast, but it always works.</p>
+                  </div>
+                </div>
+              </div>
+
+              <p>
+                Torrentium automatically tries all these methods. You don't have to
+                think about it—it just connects.
+              </p>
+            </div>
+          </div>
+
+          <!-- Challenge 3 -->
+          <div class="challenge-section">
+            <div class="challenge-header">
+              <span class="challenge-number">3</span>
+              <span class="challenge-title">Making Sure Files Aren't Corrupted</span>
+            </div>
+            <div class="challenge-content">
+              <p>
+                When you download a file piece by piece from multiple strangers on
+                the internet, how do you know you're getting the real file?
+              </p>
+              
+              <div class="solution-box">
+                <div class="solution-box__header">Solution: Content-Addressable Storage</div>
+                <div class="solution-box__content">
+                  <p>The name of a file is based on its contents. When you share a file, we calculate a unique "fingerprint" (hash). This becomes the file's CID.</p>
+                </div>
+              </div>
+
+              <div class="cid-visual">
+                <div class="cid-visual__label">Content Identifier (CID)</div>
+                <div class="cid-visual__value">bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi</div>
+              </div>
+
+              <p>Here's why this is brilliant:</p>
+              <ul>
+                <li>If even one tiny bit of the file is different, the fingerprint is completely different</li>
+                <li>When you download a file, you can calculate its fingerprint and compare</li>
+                <li>If they match, you know you have the exact same file—it's mathematically certain</li>
+              </ul>
+            </div>
+          </div>
 
           <h2>How Torrentium Actually Works</h2>
-          <p>
-            Let me walk you through what happens when you share and download a
-            file:
-          </p>
 
-          <h3>Sharing a File</h3>
-          <ol>
-            <li>You drag a file into Torrentium</li>
-            <li>The app calculates the file's fingerprint (CID)</li>
-            <li>It chops the file into small pieces (1 MB each)</li>
-            <li>Each piece gets its own fingerprint too</li>
-            <li>Torrentium announces to the network: "I have this CID!"</li>
-            <li>You get a code to share with your friend</li>
-          </ol>
-          <p>
-            That's it. Your file never leaves your computer until someone
-            requests it.
-          </p>
+          <div class="process-flow">
+            <div class="process-flow__title">
+              <span class="process-flow__title-icon">📤</span>
+              Sharing a File
+            </div>
+            <div class="process-steps">
+              <div class="process-step">
+                <span class="process-step__number">1</span>
+                <span class="process-step__text">You drag a file into Torrentium</span>
+              </div>
+              <div class="process-step">
+                <span class="process-step__number">2</span>
+                <span class="process-step__text">The app calculates the file's fingerprint (CID)</span>
+              </div>
+              <div class="process-step">
+                <span class="process-step__number">3</span>
+                <span class="process-step__text">It chops the file into small pieces (1 MB each)</span>
+              </div>
+              <div class="process-step">
+                <span class="process-step__number">4</span>
+                <span class="process-step__text">Each piece gets its own fingerprint too</span>
+              </div>
+              <div class="process-step">
+                <span class="process-step__number">5</span>
+                <span class="process-step__text">Torrentium announces to the network: "I have this CID!"</span>
+              </div>
+              <div class="process-step">
+                <span class="process-step__number">6</span>
+                <span class="process-step__text">You get a code to share with your friend</span>
+              </div>
+            </div>
+          </div>
 
-          <h3>Downloading a File</h3>
-          <ol>
-            <li>Your friend gives you a CID</li>
-            <li>You paste it into Torrentium</li>
-            <li>The app asks the network: "Who has this?"</li>
-            <li>It finds people who have pieces of the file</li>
-            <li>It downloads pieces from multiple people simultaneously</li>
-            <li>Each piece is verified with its fingerprint</li>
-            <li>Pieces are assembled into the complete file</li>
-          </ol>
+          <div class="process-flow">
+            <div class="process-flow__title">
+              <span class="process-flow__title-icon">📥</span>
+              Downloading a File
+            </div>
+            <div class="process-steps">
+              <div class="process-step">
+                <span class="process-step__number">1</span>
+                <span class="process-step__text">Your friend gives you a CID</span>
+              </div>
+              <div class="process-step">
+                <span class="process-step__number">2</span>
+                <span class="process-step__text">You paste it into Torrentium</span>
+              </div>
+              <div class="process-step">
+                <span class="process-step__number">3</span>
+                <span class="process-step__text">The app asks the network: "Who has this?"</span>
+              </div>
+              <div class="process-step">
+                <span class="process-step__number">4</span>
+                <span class="process-step__text">It finds people who have pieces of the file</span>
+              </div>
+              <div class="process-step">
+                <span class="process-step__number">5</span>
+                <span class="process-step__text">Downloads pieces from multiple people simultaneously</span>
+              </div>
+              <div class="process-step">
+                <span class="process-step__number">6</span>
+                <span class="process-step__text">Each piece is verified with its fingerprint</span>
+              </div>
+              <div class="process-step">
+                <span class="process-step__number">7</span>
+                <span class="process-step__text">Pieces are assembled into the complete file</span>
+              </div>
+            </div>
+          </div>
+
           <p>
             The cool part? If the download is interrupted, Torrentium remembers
-            which pieces you already have. You can resume right where you left
-            off.
+            which pieces you already have. You can resume right where you left off.
           </p>
 
           <h2>The Technology Stack</h2>
-          <p>
-            For the fellow builders out there, here's what powers Torrentium:
-          </p>
-          <ul>
-            <li>
-              <strong>Go:</strong> A fast, simple programming language perfect
-              for networking
-            </li>
-            <li>
-              <strong>libp2p:</strong> The networking library that handles all
-              the P2P magic (created by the IPFS team)
-            </li>
-            <li>
-              <strong>WebRTC:</strong> The technology that lets browsers do
-              video calls—we use it for fast data transfer
-            </li>
-            <li>
-              <strong>Wails:</strong> Lets us build a pretty desktop app with
-              web technologies
-            </li>
-            <li><strong>Vue.js:</strong> Powers the user interface</li>
-            <li>
-              <strong>SQLite:</strong> A tiny database that stores your file
-              information locally
-            </li>
-          </ul>
+          <p>For the fellow builders out there, here's what powers Torrentium:</p>
+
+          <div class="tech-stack">
+            <div class="tech-card">
+              <div class="tech-card__icon">🔷</div>
+              <div class="tech-card__name">Go</div>
+              <div class="tech-card__desc">Fast, simple networking</div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-card__icon">🌐</div>
+              <div class="tech-card__name">libp2p</div>
+              <div class="tech-card__desc">P2P networking magic</div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-card__icon">📡</div>
+              <div class="tech-card__name">WebRTC</div>
+              <div class="tech-card__desc">Fast data transfer</div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-card__icon">🖥️</div>
+              <div class="tech-card__name">Wails</div>
+              <div class="tech-card__desc">Desktop app framework</div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-card__icon">💚</div>
+              <div class="tech-card__name">Vue.js</div>
+              <div class="tech-card__desc">User interface</div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-card__icon">🗄️</div>
+              <div class="tech-card__name">SQLite</div>
+              <div class="tech-card__desc">Local storage</div>
+            </div>
+          </div>
 
           <h2>What I Learned Building This</h2>
 
-          <h3>1. Networking is Hard</h3>
-          <p>
-            Getting two computers to reliably communicate across the internet is
-            way harder than it should be. NATs, firewalls, ISPs that block
-            certain traffic—there are so many things that can go wrong. The only
-            solution is to try multiple methods and have lots of fallbacks.
-          </p>
-
-          <h3>2. Distributed Systems Are a Different Beast</h3>
-          <p>
-            When there's no central server, you can't just "fix a bug on the
-            server." If something goes wrong, every copy of the app has the bug.
-            You have to think very carefully about backwards compatibility and
-            graceful degradation.
-          </p>
-
-          <h3>3. User Experience Matters More Than Fancy Features</h3>
-          <p>
-            I could add a hundred advanced features, but if a regular person
-            can't figure out how to share their first file in 30 seconds, none
-            of it matters. I spent more time on the "just drag and drop"
-            experience than on most technical features.
-          </p>
+          <div class="learnings-grid">
+            <div class="learning-card">
+              <span class="learning-card__number">1</span>
+              <div class="learning-card__title">Networking is Hard</div>
+              <div class="learning-card__desc">
+                Getting two computers to reliably communicate across the internet is
+                way harder than it should be. NATs, firewalls, ISPs that block
+                certain traffic—there are so many things that can go wrong. The only
+                solution is to try multiple methods and have lots of fallbacks.
+              </div>
+            </div>
+            <div class="learning-card">
+              <span class="learning-card__number">2</span>
+              <div class="learning-card__title">Distributed Systems Are a Different Beast</div>
+              <div class="learning-card__desc">
+                When there's no central server, you can't just "fix a bug on the
+                server." If something goes wrong, every copy of the app has the bug.
+                You have to think very carefully about backwards compatibility and
+                graceful degradation.
+              </div>
+            </div>
+            <div class="learning-card">
+              <span class="learning-card__number">3</span>
+              <div class="learning-card__title">User Experience Matters More Than Fancy Features</div>
+              <div class="learning-card__desc">
+                I could add a hundred advanced features, but if a regular person
+                can't figure out how to share their first file in 30 seconds, none
+                of it matters. I spent more time on the "just drag and drop"
+                experience than on most technical features.
+              </div>
+            </div>
+          </div>
 
           <h2>What's Next?</h2>
           <p>Torrentium is already working, but there's more I want to add:</p>
-          <ul>
-            <li><strong>Mobile apps</strong> - Share files from your phone</li>
-            <li>
-              <strong>Encrypted sharing</strong> - Password-protect sensitive
-              files
-            </li>
-            <li>
-              <strong>Automatic updates</strong> - No more manual downloads
-            </li>
-            <li>
-              <strong>Selective downloads</strong> - Download just one file from
-              a folder
-            </li>
-          </ul>
 
-          <h2>Try It Yourself</h2>
-          <p>
-            If you want to try Torrentium, it's just a single executable file.
-            Download it, run it, and start sharing. No installation, no account
-            creation, no servers to configure.
-          </p>
-          <p>
-            And because it's open source, you can look at every line of code and
-            even contribute improvements.
-          </p>
+          <div class="roadmap">
+            <div class="roadmap-item">
+              <div class="roadmap-item__icon">📱</div>
+              <div class="roadmap-item__title">Mobile Apps</div>
+              <div class="roadmap-item__desc">Share files from your phone</div>
+            </div>
+            <div class="roadmap-item">
+              <div class="roadmap-item__icon">🔐</div>
+              <div class="roadmap-item__title">Encrypted Sharing</div>
+              <div class="roadmap-item__desc">Password-protect sensitive files</div>
+            </div>
+            <div class="roadmap-item">
+              <div class="roadmap-item__icon">🔄</div>
+              <div class="roadmap-item__title">Automatic Updates</div>
+              <div class="roadmap-item__desc">No more manual downloads</div>
+            </div>
+            <div class="roadmap-item">
+              <div class="roadmap-item__icon">📂</div>
+              <div class="roadmap-item__title">Selective Downloads</div>
+              <div class="roadmap-item__desc">Download just one file from a folder</div>
+            </div>
+          </div>
 
           <h2>Final Thoughts</h2>
           <p>
@@ -469,13 +1178,14 @@
             our files or facilitate our communications. The technology for true
             peer-to-peer computing exists—it just needs to be made accessible.
           </p>
-          <p>
-            <strong
-              >Every file you share directly with a friend is a small act of
-              digital independence.</strong
-            >
-            And that feels pretty good.
-          </p>
+
+          <div class="quote-callout">
+            <div class="quote-callout__emoji">🌟</div>
+            <div class="quote-callout__text">
+              "Every file you share directly with a friend is a small act of digital independence."
+            </div>
+          </div>
+
           <p>
             If you have questions or want to contribute, check out the project
             on GitHub. Happy sharing!
@@ -498,6 +1208,9 @@
                   />
                 </svg>
                 View on GitHub
+              </a>
+              <a href="blog-dht.html" class="btn btn--secondary">
+                Read: Understanding DHT
               </a>
             </div>
           </div>

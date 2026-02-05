@@ -19,6 +19,850 @@
 
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <title>WebRTC Data Channels: Beyond Video Calls | Khushvendra</title>
+
+    <style>
+      /* WebRTC-specific visual components */
+
+      /* Mind-blown callout */
+      .surprise-callout {
+        background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(236, 72, 153, 0.1));
+        border: 1px solid rgba(168, 85, 247, 0.4);
+        border-radius: 16px;
+        padding: 2rem;
+        margin: 2rem 0;
+        text-align: center;
+      }
+
+      .surprise-callout__emoji {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .surprise-callout__text {
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: var(--clr-light);
+        line-height: 1.5;
+      }
+
+      .surprise-callout__subtext {
+        color: var(--clr-slate400);
+        margin-top: 0.75rem;
+        font-size: 1rem;
+      }
+
+      /* NAT Problem visualization */
+      .nat-visual {
+        background: linear-gradient(135deg, rgba(244, 63, 94, 0.1), rgba(251, 146, 60, 0.08));
+        border: 1px solid rgba(244, 63, 94, 0.3);
+        border-radius: 16px;
+        padding: 2rem;
+        margin: 2rem 0;
+      }
+
+      .nat-visual__title {
+        font-family: var(--font-heading);
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #fb7185;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .nat-visual__title::before {
+        content: '🏢';
+      }
+
+      .nat-diagram {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .nat-diagram__row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+
+      .nat-diagram__box {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-align: center;
+      }
+
+      .nat-diagram__box--computer {
+        background: rgba(6, 182, 212, 0.2);
+        border: 1px solid rgba(6, 182, 212, 0.4);
+        color: var(--clr-cyan);
+      }
+
+      .nat-diagram__box--router {
+        background: rgba(251, 191, 36, 0.2);
+        border: 1px solid rgba(251, 191, 36, 0.4);
+        color: #fbbf24;
+      }
+
+      .nat-diagram__box--internet {
+        background: rgba(99, 102, 241, 0.2);
+        border: 1px solid rgba(99, 102, 241, 0.4);
+        color: var(--clr-indigo-light);
+        padding: 1rem 2rem;
+      }
+
+      .nat-diagram__arrow {
+        color: var(--clr-slate500);
+        font-size: 1.25rem;
+      }
+
+      .nat-diagram__blocked {
+        color: #f43f5e;
+        font-weight: 700;
+        font-size: 1.5rem;
+      }
+
+      .nat-visual__desc {
+        text-align: center;
+        color: var(--clr-slate400);
+        margin-top: 1.5rem;
+        font-size: 0.95rem;
+        line-height: 1.6;
+      }
+
+      /* WebRTC Steps */
+      .webrtc-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin: 2rem 0;
+      }
+
+      .webrtc-step {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .webrtc-step:hover {
+        border-color: rgba(6, 182, 212, 0.5);
+        transform: translateX(4px);
+      }
+
+      .webrtc-step__header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .webrtc-step__number {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #06b6d4, #0891b2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: white;
+        font-size: 1rem;
+        flex-shrink: 0;
+      }
+
+      .webrtc-step__title {
+        font-family: var(--font-heading);
+        font-weight: 700;
+        font-size: 1.15rem;
+        color: var(--clr-light);
+      }
+
+      .webrtc-step__subtitle {
+        color: var(--clr-slate400);
+        font-size: 0.9rem;
+      }
+
+      .webrtc-step__content {
+        color: var(--clr-slate300);
+        line-height: 1.7;
+        padding-left: 56px;
+      }
+
+      @media (max-width: 600px) {
+        .webrtc-step__content {
+          padding-left: 0;
+        }
+      }
+
+      .webrtc-step__content p {
+        margin: 0.5rem 0;
+      }
+
+      /* ICE options */
+      .ice-options {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 0.75rem;
+        margin: 1rem 0;
+      }
+
+      .ice-option {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        padding: 0.75rem;
+        text-align: center;
+      }
+
+      .ice-option__icon {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .ice-option__text {
+        font-size: 0.85rem;
+        color: var(--clr-slate300);
+      }
+
+      .ice-option__speed {
+        font-size: 0.75rem;
+        color: var(--clr-cyan);
+        margin-top: 0.25rem;
+      }
+
+      /* Data channels visual */
+      .channels-visual {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(6, 182, 212, 0.1));
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        border-radius: 16px;
+        padding: 2rem;
+        margin: 2rem 0;
+      }
+
+      .channels-visual__title {
+        font-family: var(--font-heading);
+        font-weight: 700;
+        font-size: 1.15rem;
+        color: var(--clr-light);
+        margin-bottom: 1.5rem;
+        text-align: center;
+      }
+
+      .channels-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+
+      @media (max-width: 600px) {
+        .channels-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .channel-type {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        padding: 1.25rem;
+        transition: all 0.3s ease;
+      }
+
+      .channel-type:hover {
+        transform: translateY(-4px);
+      }
+
+      .channel-type--media {
+        border-color: rgba(168, 85, 247, 0.3);
+      }
+
+      .channel-type--media:hover {
+        border-color: rgba(168, 85, 247, 0.6);
+      }
+
+      .channel-type--data {
+        border-color: rgba(34, 197, 94, 0.3);
+      }
+
+      .channel-type--data:hover {
+        border-color: rgba(34, 197, 94, 0.6);
+      }
+
+      .channel-type__header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .channel-type__icon {
+        font-size: 1.5rem;
+      }
+
+      .channel-type__name {
+        font-weight: 700;
+        color: var(--clr-light);
+      }
+
+      .channel-type__desc {
+        font-size: 0.85rem;
+        color: var(--clr-slate400);
+        margin-bottom: 0.75rem;
+      }
+
+      .channel-type__uses {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .channel-type__use {
+        padding: 0.25rem 0.6rem;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+        font-size: 0.8rem;
+        color: var(--clr-slate300);
+      }
+
+      /* Comparison table replacement */
+      .options-comparison {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin: 2rem 0;
+      }
+
+      .option-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 1rem;
+        padding: 1rem;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+      }
+
+      @media (max-width: 700px) {
+        .option-row {
+          grid-template-columns: 1fr;
+          gap: 0.5rem;
+        }
+      }
+
+      .option-row:hover {
+        border-color: rgba(99, 102, 241, 0.5);
+      }
+
+      .option-row--winner {
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(6, 182, 212, 0.1));
+        border-color: rgba(34, 197, 94, 0.4);
+      }
+
+      .option-row__name {
+        font-weight: 600;
+        color: var(--clr-light);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .option-row__pros {
+        color: #22c55e;
+        font-size: 0.9rem;
+      }
+
+      .option-row__cons {
+        color: #f43f5e;
+        font-size: 0.9rem;
+      }
+
+      /* Dual channel diagram */
+      .dual-channel {
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.7));
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 2rem;
+        margin: 2rem 0;
+      }
+
+      .dual-channel__title {
+        font-family: var(--font-heading);
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--clr-cyan);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .dual-channel__title svg {
+        width: 24px;
+        height: 24px;
+        fill: currentColor;
+      }
+
+      .dual-channel__grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+
+      @media (max-width: 600px) {
+        .dual-channel__grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .dual-channel__channel {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 12px;
+        padding: 1.25rem;
+        border: 1px solid transparent;
+        transition: all 0.3s ease;
+      }
+
+      .dual-channel__channel:hover {
+        transform: translateY(-2px);
+      }
+
+      .dual-channel__channel--reliable {
+        border-color: rgba(99, 102, 241, 0.3);
+      }
+
+      .dual-channel__channel--reliable:hover {
+        border-color: rgba(99, 102, 241, 0.6);
+      }
+
+      .dual-channel__channel--data {
+        border-color: rgba(34, 197, 94, 0.3);
+      }
+
+      .dual-channel__channel--data:hover {
+        border-color: rgba(34, 197, 94, 0.6);
+      }
+
+      .dual-channel__channel-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+
+      .dual-channel__channel-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+      }
+
+      .dual-channel__channel--reliable .dual-channel__channel-icon {
+        background: rgba(99, 102, 241, 0.2);
+      }
+
+      .dual-channel__channel--data .dual-channel__channel-icon {
+        background: rgba(34, 197, 94, 0.2);
+      }
+
+      .dual-channel__channel-info {
+        flex: 1;
+      }
+
+      .dual-channel__channel-name {
+        font-weight: 600;
+        color: var(--clr-light);
+        font-size: 0.95rem;
+      }
+
+      .dual-channel__channel-purpose {
+        font-size: 0.8rem;
+        color: var(--clr-slate400);
+      }
+
+      .dual-channel__uses {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .dual-channel__uses li {
+        padding: 0.35rem 0;
+        font-size: 0.875rem;
+        color: var(--clr-slate300);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .dual-channel__uses li::before {
+        content: '•';
+        color: var(--clr-cyan);
+      }
+
+      .dual-channel__uses .fast-tag {
+        background: rgba(34, 197, 94, 0.2);
+        color: #22c55e;
+        padding: 0.1rem 0.4rem;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        font-weight: 600;
+      }
+
+      /* Flavor cards */
+      .flavor-cards {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin: 2rem 0;
+      }
+
+      @media (max-width: 600px) {
+        .flavor-cards {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .flavor-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .flavor-card:hover {
+        transform: translateY(-4px);
+      }
+
+      .flavor-card--reliable {
+        border-color: rgba(99, 102, 241, 0.3);
+      }
+
+      .flavor-card--reliable:hover {
+        border-color: rgba(99, 102, 241, 0.6);
+      }
+
+      .flavor-card--unreliable {
+        border-color: rgba(251, 191, 36, 0.3);
+      }
+
+      .flavor-card--unreliable:hover {
+        border-color: rgba(251, 191, 36, 0.6);
+      }
+
+      .flavor-card__header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+
+      .flavor-card__icon {
+        font-size: 1.5rem;
+      }
+
+      .flavor-card__title {
+        font-weight: 700;
+        color: var(--clr-light);
+        font-size: 1.1rem;
+      }
+
+      .flavor-card__analogy {
+        font-size: 0.85rem;
+        color: var(--clr-slate400);
+        font-style: italic;
+        margin-bottom: 1rem;
+        padding-left: 0.75rem;
+        border-left: 2px solid rgba(99, 102, 241, 0.3);
+      }
+
+      .flavor-card__features {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .flavor-card__features li {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.35rem 0;
+        font-size: 0.9rem;
+        color: var(--clr-slate300);
+      }
+
+      .flavor-card__features li::before {
+        content: '•';
+      }
+
+      .flavor-card--reliable .flavor-card__features li::before {
+        color: var(--clr-indigo-light);
+      }
+
+      .flavor-card--unreliable .flavor-card__features li::before {
+        color: #fbbf24;
+      }
+
+      /* Connection pooling visual */
+      .pooling-visual {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        font-family: 'Fira Code', 'JetBrains Mono', monospace;
+      }
+
+      .pooling-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0.5rem 0;
+        flex-wrap: wrap;
+      }
+
+      .pooling-label {
+        color: var(--clr-slate400);
+        min-width: 120px;
+        font-size: 0.85rem;
+      }
+
+      .pooling-segment {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+      }
+
+      .pooling-segment--connect {
+        background: rgba(244, 63, 94, 0.2);
+        color: #fb7185;
+      }
+
+      .pooling-segment--fast {
+        background: rgba(34, 197, 94, 0.2);
+        color: #22c55e;
+      }
+
+      .pooling-segment--transfer {
+        background: rgba(6, 182, 212, 0.2);
+        color: var(--clr-cyan);
+      }
+
+      .pooling-total {
+        color: var(--clr-light);
+        font-weight: 600;
+        margin-left: auto;
+      }
+
+      .pooling-note {
+        color: #22c55e;
+        font-size: 0.8rem;
+        margin-top: 0.5rem;
+        margin-left: 120px;
+      }
+
+      /* TURN fallback visual */
+      .turn-visual {
+        background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.05));
+        border: 1px solid rgba(251, 191, 36, 0.3);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+      }
+
+      .turn-visual__title {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        color: #fbbf24;
+        margin-bottom: 1rem;
+      }
+
+      .turn-visual__content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        padding: 1rem;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+      }
+
+      .turn-visual__node {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        text-align: center;
+      }
+
+      .turn-visual__node--peer {
+        background: rgba(6, 182, 212, 0.2);
+        border: 1px solid rgba(6, 182, 212, 0.4);
+        color: var(--clr-cyan);
+      }
+
+      .turn-visual__node--turn {
+        background: rgba(251, 191, 36, 0.2);
+        border: 1px solid rgba(251, 191, 36, 0.4);
+        color: #fbbf24;
+      }
+
+      .turn-visual__arrow {
+        color: var(--clr-slate500);
+      }
+
+      .turn-visual__desc {
+        color: var(--clr-slate400);
+        font-size: 0.9rem;
+        margin-top: 1rem;
+        text-align: center;
+      }
+
+      /* Benefits grid */
+      .benefits-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0;
+      }
+
+      .benefit-card {
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(6, 182, 212, 0.05));
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        border-radius: 12px;
+        padding: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .benefit-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(34, 197, 94, 0.6);
+      }
+
+      .benefit-card__icon {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .benefit-card__title {
+        font-weight: 600;
+        color: var(--clr-light);
+        font-size: 0.95rem;
+        margin-bottom: 0.25rem;
+      }
+
+      .benefit-card__desc {
+        font-size: 0.8rem;
+        color: var(--clr-slate400);
+      }
+
+      /* Resources list */
+      .resources-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin: 1.5rem 0;
+      }
+
+      .resource-link {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.25rem;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+      }
+
+      .resource-link:hover {
+        border-color: rgba(99, 102, 241, 0.5);
+        transform: translateX(4px);
+      }
+
+      .resource-link__icon {
+        width: 40px;
+        height: 40px;
+        background: var(--gradient-primary);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+      }
+
+      .resource-link__content {
+        flex: 1;
+      }
+
+      .resource-link__title {
+        font-weight: 600;
+        color: var(--clr-light);
+        margin-bottom: 0.25rem;
+      }
+
+      .resource-link__desc {
+        font-size: 0.85rem;
+        color: var(--clr-slate400);
+      }
+
+      .resource-link__arrow {
+        color: var(--clr-indigo-light);
+        font-size: 1.25rem;
+        transition: transform 0.2s ease;
+      }
+
+      .resource-link:hover .resource-link__arrow {
+        transform: translateX(4px);
+      }
+
+      /* Quote block */
+      .quote-block {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.1));
+        border: 1px solid rgba(99, 102, 241, 0.4);
+        border-radius: 16px;
+        padding: 2rem;
+        margin: 2rem 0;
+        font-style: italic;
+        color: var(--clr-slate300);
+        line-height: 1.7;
+        position: relative;
+      }
+
+      .quote-block::before {
+        content: '"';
+        position: absolute;
+        top: 10px;
+        left: 20px;
+        font-size: 4rem;
+        color: rgba(99, 102, 241, 0.3);
+        font-family: Georgia, serif;
+        line-height: 1;
+      }
+
+      .quote-block p {
+        position: relative;
+        z-index: 1;
+        margin: 0;
+        padding-left: 2rem;
+      }
+    </style>
   </head>
   <body>
     <!-- Particle Canvas Background -->
@@ -142,20 +986,23 @@
 
         <!-- Post Content -->
         <div class="blog-post__content">
+          
           <h2>Wait, WebRTC is for Video Calls... Right?</h2>
           <p>
             When most people hear "WebRTC," they think of video calls. Zoom,
             Google Meet, Discord—they all use WebRTC to stream your face to
-            other people in real-time. But here's something that might surprise
-            you:
+            other people in real-time. But here's something that might surprise you:
           </p>
-          <p>
-            <strong>WebRTC can send any data, not just video.</strong>
-          </p>
-          <p>
-            And that's exactly what I used to build the file transfer engine in
-            Torrentium.
-          </p>
+
+          <div class="surprise-callout">
+            <div class="surprise-callout__emoji">🤯</div>
+            <div class="surprise-callout__text">
+              WebRTC can send any data, not just video.
+            </div>
+            <div class="surprise-callout__subtext">
+              And that's exactly what I used to build the file transfer engine in Torrentium.
+            </div>
+          </div>
 
           <h2>The Problem: Getting Two Computers to Talk</h2>
           <p>
@@ -163,13 +1010,29 @@
             your friend's computer. Sounds simple, right? Just connect and send.
           </p>
           <p>Except... it's not simple at all.</p>
-          <p>
-            Your computer doesn't have a public address on the internet. Neither
-            does your friend's. You're both hidden behind routers, firewalls,
-            and something called NAT (Network Address Translation). It's like
-            you're both living in apartments with no address on the door—only
-            the building's front desk knows you exist.
-          </p>
+
+          <div class="nat-visual">
+            <div class="nat-visual__title">The NAT Problem</div>
+            <div class="nat-diagram">
+              <div class="nat-diagram__row">
+                <div class="nat-diagram__box nat-diagram__box--computer">💻 Your Computer</div>
+                <span class="nat-diagram__arrow">→</span>
+                <div class="nat-diagram__box nat-diagram__box--router">🔒 Your Router</div>
+              </div>
+              <span class="nat-diagram__arrow" style="transform: rotate(90deg);">→</span>
+              <div class="nat-diagram__box nat-diagram__box--internet">🌐 Internet</div>
+              <span class="nat-diagram__arrow" style="transform: rotate(90deg);">→</span>
+              <div class="nat-diagram__row">
+                <div class="nat-diagram__box nat-diagram__box--router">🔒 Friend's Router</div>
+                <span class="nat-diagram__blocked">✗</span>
+                <div class="nat-diagram__box nat-diagram__box--computer">💻 Friend's Computer</div>
+              </div>
+            </div>
+            <div class="nat-visual__desc">
+              Both computers are hidden behind routers, firewalls, and NAT. It's like living in apartments with no address on the door—only the building's front desk knows you exist.
+            </div>
+          </div>
+
           <p>
             This is why most file-sharing services make you upload to
             <em>their</em> server first. They act as the middleman because
@@ -186,56 +1049,109 @@
             NATs talk to each other" problem. Here's their clever solution:
           </p>
 
-          <h3>Step 1: Find Each Other (STUN)</h3>
-          <p>
-            Both computers contact a public server called a STUN server. Think
-            of it as a mirror—the STUN server tells each computer: "Hey, from
-            the outside world, you look like this address."
-          </p>
-          <p>Now both computers know how they appear to the outside world.</p>
+          <div class="webrtc-steps">
+            <div class="webrtc-step">
+              <div class="webrtc-step__header">
+                <span class="webrtc-step__number">1</span>
+                <div>
+                  <div class="webrtc-step__title">Find Each Other (STUN)</div>
+                  <div class="webrtc-step__subtitle">Discovering your public identity</div>
+                </div>
+              </div>
+              <div class="webrtc-step__content">
+                <p>
+                  Both computers contact a public server called a STUN server. Think of it as a mirror—the STUN server tells each computer: "Hey, from the outside world, you look like this address."
+                </p>
+                <p>Now both computers know how they appear to the outside world.</p>
+              </div>
+            </div>
 
-          <h3>Step 2: Try Every Possible Path (ICE)</h3>
-          <p>WebRTC then tries multiple ways to connect:</p>
-          <ul>
-            <li>Can we connect directly? (fastest)</li>
-            <li>Can we "punch a hole" through the NAT? (still fast)</li>
-            <li>
-              Do we need to relay through a server? (slower, but always works)
-            </li>
-          </ul>
-          <p>
-            This process is called ICE (Interactive Connectivity Establishment).
-            It's like trying every door in a building until one opens.
-          </p>
+            <div class="webrtc-step">
+              <div class="webrtc-step__header">
+                <span class="webrtc-step__number">2</span>
+                <div>
+                  <div class="webrtc-step__title">Try Every Possible Path (ICE)</div>
+                  <div class="webrtc-step__subtitle">Interactive Connectivity Establishment</div>
+                </div>
+              </div>
+              <div class="webrtc-step__content">
+                <p>WebRTC then tries multiple ways to connect:</p>
+                <div class="ice-options">
+                  <div class="ice-option">
+                    <div class="ice-option__icon">🎯</div>
+                    <div class="ice-option__text">Direct connection</div>
+                    <div class="ice-option__speed">Fastest</div>
+                  </div>
+                  <div class="ice-option">
+                    <div class="ice-option__icon">🕳️</div>
+                    <div class="ice-option__text">NAT hole punching</div>
+                    <div class="ice-option__speed">Still fast</div>
+                  </div>
+                  <div class="ice-option">
+                    <div class="ice-option__icon">🔄</div>
+                    <div class="ice-option__text">Server relay</div>
+                    <div class="ice-option__speed">Always works</div>
+                  </div>
+                </div>
+                <p>It's like trying every door in a building until one opens.</p>
+              </div>
+            </div>
 
-          <h3>Step 3: Connect and Encrypt</h3>
-          <p>
-            Once a path is found, WebRTC establishes an encrypted connection.
-            Everything sent over this connection is secure by default—no extra
-            setup needed.
-          </p>
+            <div class="webrtc-step">
+              <div class="webrtc-step__header">
+                <span class="webrtc-step__number">3</span>
+                <div>
+                  <div class="webrtc-step__title">Connect and Encrypt</div>
+                  <div class="webrtc-step__subtitle">Secure by default</div>
+                </div>
+              </div>
+              <div class="webrtc-step__content">
+                <p>
+                  Once a path is found, WebRTC establishes an encrypted connection.
+                  Everything sent over this connection is secure by default—no extra setup needed.
+                </p>
+              </div>
+            </div>
+          </div>
 
           <h2>Enter: Data Channels</h2>
           <p>Here's where it gets interesting for file sharing.</p>
-          <p>WebRTC has two types of channels:</p>
-          <ol>
-            <li><strong>Media Streams</strong> - for video and audio</li>
-            <li><strong>Data Channels</strong> - for <em>anything else</em></li>
-          </ol>
+
+          <div class="channels-visual">
+            <div class="channels-visual__title">WebRTC Has Two Types of Channels</div>
+            <div class="channels-grid">
+              <div class="channel-type channel-type--media">
+                <div class="channel-type__header">
+                  <span class="channel-type__icon">🎥</span>
+                  <span class="channel-type__name">Media Streams</span>
+                </div>
+                <div class="channel-type__desc">For video and audio</div>
+                <div class="channel-type__uses">
+                  <span class="channel-type__use">Video calls</span>
+                  <span class="channel-type__use">Audio chat</span>
+                  <span class="channel-type__use">Streaming</span>
+                </div>
+              </div>
+              <div class="channel-type channel-type--data">
+                <div class="channel-type__header">
+                  <span class="channel-type__icon">📦</span>
+                  <span class="channel-type__name">Data Channels</span>
+                </div>
+                <div class="channel-type__desc">For <em>anything else</em></div>
+                <div class="channel-type__uses">
+                  <span class="channel-type__use">Text messages</span>
+                  <span class="channel-type__use">Game state</span>
+                  <span class="channel-type__use">Binary files</span>
+                  <span class="channel-type__use">Any bytes!</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <p>
             Data channels are like having a direct, encrypted pipe between two
-            computers. You can send:
-          </p>
-          <ul>
-            <li>Text messages</li>
-            <li>Game state updates</li>
-            <li>Binary files</li>
-            <li>Literally any bytes you want</li>
-          </ul>
-          <p>
-            And it's <strong>fast</strong>. Like, really fast. Because there's
-            no server in the middle—data goes directly from your computer to
-            theirs.
+            computers. And it's <strong>fast</strong>. Like, really fast. Because there's
+            no server in the middle—data goes directly from your computer to theirs.
           </p>
 
           <h2>Why I Chose WebRTC for Torrentium</h2>
@@ -244,33 +1160,28 @@
             between users. I had a few options:
           </p>
 
-          <div class="blog-post__table-wrapper">
-            <table class="blog-post__table">
-              <thead>
-                <tr>
-                  <th>Option</th>
-                  <th>Pros</th>
-                  <th>Cons</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Traditional TCP</td>
-                  <td>Simple, reliable</td>
-                  <td>Blocked by NAT/firewalls</td>
-                </tr>
-                <tr>
-                  <td>WebSocket via server</td>
-                  <td>Always works</td>
-                  <td>Not peer-to-peer, server costs</td>
-                </tr>
-                <tr>
-                  <td>WebRTC Data Channels</td>
-                  <td>Direct P2P, handles NAT, encrypted</td>
-                  <td>More complex to set up</td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="options-comparison">
+            <div class="option-row">
+              <div class="option-row__name">
+                <span>🔌</span> Traditional TCP
+              </div>
+              <div class="option-row__pros">✓ Simple, reliable</div>
+              <div class="option-row__cons">✗ Blocked by NAT/firewalls</div>
+            </div>
+            <div class="option-row">
+              <div class="option-row__name">
+                <span>🔗</span> WebSocket via server
+              </div>
+              <div class="option-row__pros">✓ Always works</div>
+              <div class="option-row__cons">✗ Not P2P, server costs</div>
+            </div>
+            <div class="option-row option-row--winner">
+              <div class="option-row__name">
+                <span>⚡</span> WebRTC Data Channels
+              </div>
+              <div class="option-row__pros">✓ Direct P2P, handles NAT, encrypted</div>
+              <div class="option-row__cons">✗ More complex setup</div>
+            </div>
           </div>
 
           <p>
@@ -282,84 +1193,67 @@
           <h2>Two Flavors of Data Channels</h2>
           <p>When creating a data channel, you have a choice:</p>
 
-          <h3>Reliable (Ordered)</h3>
-          <ul>
-            <li>Every piece of data arrives</li>
-            <li>Data arrives in order</li>
-            <li>Slightly slower due to error checking</li>
-            <li>Like sending a letter via registered mail</li>
-          </ul>
-
-          <h3>Unreliable (Unordered)</h3>
-          <ul>
-            <li>Data might get lost</li>
-            <li>Data might arrive out of order</li>
-            <li>Faster because no waiting for confirmations</li>
-            <li>Like shouting across a room</li>
-          </ul>
+          <div class="flavor-cards">
+            <div class="flavor-card flavor-card--reliable">
+              <div class="flavor-card__header">
+                <span class="flavor-card__icon">📬</span>
+                <span class="flavor-card__title">Reliable (Ordered)</span>
+              </div>
+              <div class="flavor-card__analogy">Like sending a letter via registered mail</div>
+              <ul class="flavor-card__features">
+                <li>Every piece of data arrives</li>
+                <li>Data arrives in order</li>
+                <li>Slightly slower due to error checking</li>
+              </ul>
+            </div>
+            <div class="flavor-card flavor-card--unreliable">
+              <div class="flavor-card__header">
+                <span class="flavor-card__icon">📢</span>
+                <span class="flavor-card__title">Unreliable (Unordered)</span>
+              </div>
+              <div class="flavor-card__analogy">Like shouting across a room</div>
+              <ul class="flavor-card__features">
+                <li>Data might get lost</li>
+                <li>Data might arrive out of order</li>
+                <li>Faster, no waiting for confirmations</li>
+              </ul>
+            </div>
+          </div>
 
           <p>In Torrentium, I use <strong>both</strong>:</p>
 
-          <!-- Dual Channel Diagram -->
-          <div class="channel-diagram">
-            <div class="channel-diagram__header">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-                />
+          <div class="dual-channel">
+            <div class="dual-channel__title">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
               </svg>
-              <span>DUAL CHANNEL SETUP</span>
+              DUAL CHANNEL SETUP
             </div>
-            <div class="channel-diagram__content">
-              <div
-                class="channel-diagram__channel channel-diagram__channel--reliable"
-              >
-                <div class="channel-diagram__channel-header">
-                  <div class="channel-diagram__icon">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                      <path
-                        d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"
-                      />
-                    </svg>
-                  </div>
-                  <div class="channel-diagram__label">
-                    <span class="channel-diagram__name"
-                      >"reliable" channel</span
-                    >
-                    <span class="channel-diagram__arrow">→</span>
-                    <span class="channel-diagram__purpose"
-                      >Control messages</span
-                    >
+            <div class="dual-channel__grid">
+              <div class="dual-channel__channel dual-channel__channel--reliable">
+                <div class="dual-channel__channel-header">
+                  <div class="dual-channel__channel-icon">🛡️</div>
+                  <div class="dual-channel__channel-info">
+                    <div class="dual-channel__channel-name">"reliable" channel</div>
+                    <div class="dual-channel__channel-purpose">→ Control messages</div>
                   </div>
                 </div>
-                <ul class="channel-diagram__list">
+                <ul class="dual-channel__uses">
                   <li>Request piece #42</li>
                   <li>File metadata</li>
                   <li>"I have pieces 1-50"</li>
                 </ul>
               </div>
-              <div
-                class="channel-diagram__channel channel-diagram__channel--data"
-              >
-                <div class="channel-diagram__channel-header">
-                  <div class="channel-diagram__icon">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                      <path
-                        d="M13 2.05v2.02c3.95.49 7 3.85 7 7.93 0 3.21-1.92 6-4.72 7.28L13 17v5h5l-1.22-1.22C19.91 19.07 22 15.76 22 12c0-5.18-3.95-9.45-9-9.95zM11 2.05C5.94 2.55 2 6.81 2 12c0 3.76 2.09 7.07 5.22 8.78L6 22h5v-5l-2.28 2.28C6.92 18 5 15.21 5 12c0-4.08 3.05-7.44 7-7.93V2.05z"
-                      />
-                    </svg>
-                  </div>
-                  <div class="channel-diagram__label">
-                    <span class="channel-diagram__name">"data" channel</span>
-                    <span class="channel-diagram__arrow">→</span>
-                    <span class="channel-diagram__purpose">File content</span>
+              <div class="dual-channel__channel dual-channel__channel--data">
+                <div class="dual-channel__channel-header">
+                  <div class="dual-channel__channel-icon">🔄</div>
+                  <div class="dual-channel__channel-info">
+                    <div class="dual-channel__channel-name">"data" channel</div>
+                    <div class="dual-channel__channel-purpose">→ File content</div>
                   </div>
                 </div>
-                <ul class="channel-diagram__list">
-                  <li>
-                    Raw bytes
-                    <span class="channel-diagram__highlight">(fast!)</span>
-                  </li>
+                <ul class="dual-channel__uses">
+                  <li>Raw bytes <span class="fast-tag">FAST!</span></li>
                   <li>Piece data</li>
                 </ul>
               </div>
@@ -383,14 +1277,24 @@
           <p>My solution: <strong>connection pooling</strong>.</p>
           <p>
             Once I connect to a peer, I keep that connection alive. If I need
-            more data from them later, the connection is already there—instant
-            transfer. It's like keeping a phone line open instead of hanging up
-            and redialing every time.
+            more data from them later, the connection is already there—instant transfer.
           </p>
 
-          <pre><code>First request:   [Connect: 2.1s] [Transfer: 0.3s] = 2.4s total
-Second request:  [Connect: 0s]   [Transfer: 0.3s] = 0.3s total
-                 ↑ Already connected!</code></pre>
+          <div class="pooling-visual">
+            <div class="pooling-row">
+              <span class="pooling-label">First request:</span>
+              <span class="pooling-segment pooling-segment--connect">Connect: 2.1s</span>
+              <span class="pooling-segment pooling-segment--transfer">Transfer: 0.3s</span>
+              <span class="pooling-total">= 2.4s total</span>
+            </div>
+            <div class="pooling-row">
+              <span class="pooling-label">Second request:</span>
+              <span class="pooling-segment pooling-segment--fast">Connect: 0s</span>
+              <span class="pooling-segment pooling-segment--transfer">Transfer: 0.3s</span>
+              <span class="pooling-total">= 0.3s total</span>
+            </div>
+            <div class="pooling-note">↑ Already connected!</div>
+          </div>
 
           <h2>What About Fallbacks?</h2>
           <p>
@@ -399,11 +1303,23 @@ Second request:  [Connect: 0s]   [Transfer: 0.3s] = 0.3s total
             corporate firewalls. In that case, WebRTC has one more trick:
             <strong>TURN servers</strong>.
           </p>
-          <p>
-            A TURN server acts as a relay—data goes through it instead of
-            directly between peers. It's slower and costs money to run, but it
-            ensures <em>something</em> works.
-          </p>
+
+          <div class="turn-visual">
+            <div class="turn-visual__title">
+              <span>🔄</span> TURN Server Fallback
+            </div>
+            <div class="turn-visual__content">
+              <div class="turn-visual__node turn-visual__node--peer">You</div>
+              <span class="turn-visual__arrow">→</span>
+              <div class="turn-visual__node turn-visual__node--turn">TURN Server</div>
+              <span class="turn-visual__arrow">→</span>
+              <div class="turn-visual__node turn-visual__node--peer">Friend</div>
+            </div>
+            <div class="turn-visual__desc">
+              Data goes through the relay instead of directly. It's slower and costs money to run, but it ensures <em>something</em> works.
+            </div>
+          </div>
+
           <p>
             Torrentium automatically falls back to TURN when direct connection
             fails. Users don't even notice—their file just transfers, maybe a
@@ -412,28 +1328,35 @@ Second request:  [Connect: 0s]   [Transfer: 0.3s] = 0.3s total
 
           <h2>The Bottom Line</h2>
           <p>WebRTC data channels give you:</p>
-          <ul>
-            <li>
-              ✅ <strong>Direct peer-to-peer connection</strong> - no servers in
-              the middle
-            </li>
-            <li>
-              ✅ <strong>NAT traversal built-in</strong> - works through
-              firewalls and routers
-            </li>
-            <li>
-              ✅ <strong>Encryption by default</strong> - secure without extra
-              work
-            </li>
-            <li>
-              ✅ <strong>High performance</strong> - designed for real-time
-              video, even better for files
-            </li>
-            <li>
-              ✅ <strong>Fallback options</strong> - TURN relay when direct
-              fails
-            </li>
-          </ul>
+
+          <div class="benefits-grid">
+            <div class="benefit-card">
+              <div class="benefit-card__icon">🔗</div>
+              <div class="benefit-card__title">Direct P2P Connection</div>
+              <div class="benefit-card__desc">No servers in the middle</div>
+            </div>
+            <div class="benefit-card">
+              <div class="benefit-card__icon">🔓</div>
+              <div class="benefit-card__title">NAT Traversal Built-in</div>
+              <div class="benefit-card__desc">Works through firewalls and routers</div>
+            </div>
+            <div class="benefit-card">
+              <div class="benefit-card__icon">🔒</div>
+              <div class="benefit-card__title">Encryption by Default</div>
+              <div class="benefit-card__desc">Secure without extra work</div>
+            </div>
+            <div class="benefit-card">
+              <div class="benefit-card__icon">⚡</div>
+              <div class="benefit-card__title">High Performance</div>
+              <div class="benefit-card__desc">Designed for real-time video</div>
+            </div>
+            <div class="benefit-card">
+              <div class="benefit-card__icon">🔄</div>
+              <div class="benefit-card__title">Fallback Options</div>
+              <div class="benefit-card__desc">TURN relay when direct fails</div>
+            </div>
+          </div>
+
           <p>
             For Torrentium, this means users can share files directly with each
             other, securely, without me running expensive servers to handle the
@@ -448,10 +1371,7 @@ Second request:  [Connect: 0s]   [Transfer: 0.3s] = 0.3s total
           </p>
           <ol>
             <li>Two browsers (or apps) want to talk</li>
-            <li>
-              They exchange some "signaling" info (through any channel—even
-              copy/paste!)
-            </li>
+            <li>They exchange some "signaling" info (through any channel—even copy/paste!)</li>
             <li>WebRTC figures out how to connect them</li>
             <li>Data channels open up for direct communication</li>
           </ol>
@@ -461,39 +1381,42 @@ Second request:  [Connect: 0s]   [Transfer: 0.3s] = 0.3s total
           </p>
 
           <h2>Further Reading</h2>
-          <ul>
-            <li>
-              <a href="https://webrtc.org/" target="_blank" rel="noopener"
-                ><strong>WebRTC.org</strong></a
-              >
-              - Official WebRTC documentation
-            </li>
-            <li>
-              <a
-                href="https://github.com/pion/webrtc"
-                target="_blank"
-                rel="noopener"
-                ><strong>Pion WebRTC</strong></a
-              >
-              - The Go library I use in Torrentium
-            </li>
-            <li>
-              <a
-                href="https://webrtc.ventures/2020/10/stun-turn/"
-                target="_blank"
-                rel="noopener"
-                ><strong>ICE, STUN, and TURN Explained</strong></a
-              >
-              - Deeper dive into NAT traversal
-            </li>
-          </ul>
 
-          <blockquote>
-            WebRTC turned what seemed impossible—direct computer-to-computer
-            communication through NATs and firewalls—into something that just
-            works. For Torrentium, it's the secret sauce that makes true
-            peer-to-peer file sharing possible.
-          </blockquote>
+          <div class="resources-list">
+            <a href="https://webrtc.org/" target="_blank" rel="noopener" class="resource-link">
+              <div class="resource-link__icon">🌐</div>
+              <div class="resource-link__content">
+                <div class="resource-link__title">WebRTC.org</div>
+                <div class="resource-link__desc">Official WebRTC documentation</div>
+              </div>
+              <span class="resource-link__arrow">→</span>
+            </a>
+            <a href="https://github.com/pion/webrtc" target="_blank" rel="noopener" class="resource-link">
+              <div class="resource-link__icon">🔷</div>
+              <div class="resource-link__content">
+                <div class="resource-link__title">Pion WebRTC</div>
+                <div class="resource-link__desc">The Go library I use in Torrentium</div>
+              </div>
+              <span class="resource-link__arrow">→</span>
+            </a>
+            <a href="https://webrtc.ventures/2020/10/stun-turn/" target="_blank" rel="noopener" class="resource-link">
+              <div class="resource-link__icon">📚</div>
+              <div class="resource-link__content">
+                <div class="resource-link__title">ICE, STUN, and TURN Explained</div>
+                <div class="resource-link__desc">Deeper dive into NAT traversal</div>
+              </div>
+              <span class="resource-link__arrow">→</span>
+            </a>
+          </div>
+
+          <div class="quote-block">
+            <p>
+              WebRTC turned what seemed impossible—direct computer-to-computer
+              communication through NATs and firewalls—into something that just
+              works. For Torrentium, it's the secret sauce that makes true
+              peer-to-peer file sharing possible.
+            </p>
+          </div>
 
           <!-- Call to Action -->
           <div class="blog-post__cta">
